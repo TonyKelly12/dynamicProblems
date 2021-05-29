@@ -40,26 +40,27 @@ function tookOneStep(num, originalNumber) {
 
 function tookTwoSteps(num, originalNumber) {
   const twoStepsOptions = takeSteps(num);
-  const shouldAddToMemo = [];
+  const shouldAddSumToMemo = [];
   twoStepsOptions.forEach((n) => {
     const isInMemo = inMemo(n);
     if (isInMemo) {
-        shouldAddToMemo.push(n)
+        shouldAddSumToMemo.push(n)
+      addToSolutions(memo[n]);
     } else {
        if(n > 0) numQue.push(n);
     };
 
     // Push to que if not in memo ???
   });
-  if (shouldAddToMemo.length === 2) addToMemo(twoStepsOptions, originalNumber);
+  if (shouldAddSumToMemo.length === 2) addToMemo(twoStepsOptions, originalNumber);
 }
 
 function inMemo(number) {
   if (memo[number]) {
     solutions = solutions + memo[number];
-    return true;
+    return;
   } else {
-    return false;
+    return number;
   }
 }
 
@@ -77,10 +78,21 @@ function addToSolutions(number) {
 function climbStairs(n) {
   if (n > 0) {
     const optionsArray = takeSteps(n);
-    setQue(optionsArray);
-    atTop(optionsArray);
-    tookOneStep(optionsArray[0], n);
-    tookTwoSteps(optionsArray[1], n);
+    let notInMemoArray = [];
+    optionsArray.forEach(num =>{
+       const notInMemNum = inMemo(num)
+       if(notInMemNum && notInMemNum > 0){
+         notInMemoArray.push(notInMemNum);
+       }
+    });
+    console.log('not in memo', notInMemoArray); 
+    setQue(notInMemoArray);
+    atTop(notInMemoArray);
+    tookOneStep(notInMemoArray[0], n);
+    if(notInMemoArray.length === 2){
+      tookTwoSteps(notInMemoArray[1], n);
+    }
+    
     if (numQue.length > 0) {
       console.log(memo);
       let newNum = numQue.pop();
